@@ -17,6 +17,15 @@ export default function Register() {
         <div className="min-h-screen flex flex-col justify-center items-center bg-neutral-50 px-6">
             <Head title="Daftar Akun" />
 
+            <div className="w-full max-w-md mb-4">
+                <Link
+                    href="/"
+                    className="text-sm font-medium text-blue-600 hover:text-blue-700"
+                >
+                    &larr; Kembali ke Beranda
+                </Link>
+            </div>
+
             <div className="w-full max-w-md bg-white border border-neutral-200 rounded-2xl shadow-sm p-8 space-y-6">
                 <div className="text-center">
                     <h1 className="text-2xl font-semibold text-neutral-900 tracking-tight">
