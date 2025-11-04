@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('borrowings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('book_id')->constrained()->cascadeOnDelete();
-            $table->enum('status', ['requested', 'borrowed', 'returned', 'cancelled'])->default('requested');
+            $table->string('book_id', 10);
+            $table->foreign('book_id')->references('id')->on('books')->cascadeOnDelete();
+            $table->enum('status', ['requested', 'borrowed', 'returned', 'rejected', 'cancelled'])->default('requested');
             $table->date('borrow_date')->nullable();
             $table->date('return_date')->nullable();
             $table->integer('fine_amount')->default(0);

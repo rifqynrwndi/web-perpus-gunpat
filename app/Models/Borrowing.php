@@ -23,7 +23,7 @@ class Borrowing extends Model
 
     protected $casts = [
         'borrow_date' => 'date',
-        'due_date'    => 'date', 
+        'due_date'    => 'date',
         'return_date' => 'date',
         'fine_paid_at' => 'date'
     ];

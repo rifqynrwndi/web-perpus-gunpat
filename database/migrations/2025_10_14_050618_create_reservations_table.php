@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('book_id')->constrained()->cascadeOnDelete();
+            $table->string('book_id', 10);
+            $table->foreign('book_id')->references('id')->on('books')->cascadeOnDelete();
             $table->enum('status', ['waiting', 'notified'])->default('waiting');
             $table->timestamp('notified_at')->nullable();
             $table->timestamps();

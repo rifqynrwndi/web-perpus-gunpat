@@ -13,7 +13,7 @@ class BookController extends Controller
 {
     public function index()
     {
-        $books = Book::with('category')->latest()->paginate(10);
+        $books = Book::with('category')->orderBy('id', 'asc')->paginate(10);
 
         return Inertia::render('Admin/Books/Index', [
             'books' => $books,
@@ -87,7 +87,7 @@ class BookController extends Controller
             'total_copies' => 'required|integer|min:1',
             'available_copies' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
-            'file' => 'nullable|mimes:pdf|max:20480', 
+            'file' => 'nullable|mimes:pdf|max:20480',
         ]);
 
         // Jika available_copies tidak diisi, samakan dengan total_copies

@@ -25,6 +25,8 @@ class BorrowingController extends Controller
     {
         $action = $request->action;
 
+        $book = $borrowing->book;
+
         // === APPROVE REQUEST ===
         if ($action === 'approve' && $borrowing->status === 'requested') {
             $borrowDays = (int) Setting::get('max_borrow_days', 7);
@@ -36,6 +38,21 @@ class BorrowingController extends Controller
             ]);
 
             return back()->with('success', 'Peminjaman disetujui.');
+        }
+
+        // === REJECT REQUEST ===
+        if ($action === 'reject' && $borrowing->status === 'requested') {
+            $borrowing->update([
+                'status' => 'rejected',
+            ]);
+
+            // Kembalikan stok buku
+            $book->increment('available_copies', 1);
+
+            // Cek antrian reservasi, karena stok bertambah
+            $this->checkNextReservation($book);
+
+            return back()->with('success', 'Permintaan peminjaman ditolak.');
         }
 
         // === RETURN BOOK ===

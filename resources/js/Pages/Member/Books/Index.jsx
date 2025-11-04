@@ -5,15 +5,15 @@ import { useEffect, useState } from "react";
 export default function Index({ books, categories, filters }) {
     const { flash } = usePage().props;
 
-    // Local state buat search dan kategori
+    // State pencarian & kategori
     const [search, setSearch] = useState(filters.search || "");
     const [category, setCategory] = useState(filters.category || "");
 
-    // Function buat trigger query otomatis
+    // Trigger perubahan filter
     const handleFilterChange = (newSearch, newCategory) => {
         router.get(
             route("member.books.index"),
-            { search: newSearch, category: newCategory },
+            { search: newSearch, category: newCategory, page: 1 },
             {
                 preserveState: true,
                 replace: true,
@@ -21,11 +21,11 @@ export default function Index({ books, categories, filters }) {
         );
     };
 
+    // Debounce pencarian
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
             handleFilterChange(search, category);
         }, 400);
-
         return () => clearTimeout(delayDebounce);
     }, [search, category]);
 
@@ -37,7 +37,7 @@ export default function Index({ books, categories, filters }) {
                     Katalog Buku
                 </h1>
                 <p className="text-neutral-500 text-sm">
-                    Jelajahi dan pinjam buku dari koleksi perpustakaan Perpustakaan.
+                    Jelajahi dan pinjam buku dari koleksi perpustakaan.
                 </p>
             </div>
 
@@ -86,9 +86,7 @@ export default function Index({ books, categories, filters }) {
                             key={book.id}
                             className="bg-white border border-neutral-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-all hover:-translate-y-[2px]"
                             style={{
-                                animation: `fadeIn 0.4s ease-out ${
-                                    i * 0.05
-                                }s both`,
+                                animation: `fadeIn 0.4s ease-out ${i * 0.05}s both`,
                             }}
                         >
                             <div className="flex flex-col h-full justify-between space-y-3">
@@ -98,8 +96,7 @@ export default function Index({ books, categories, filters }) {
                                         {book.title}
                                     </h2>
                                     <p className="text-sm text-neutral-500">
-                                        {book.author ||
-                                            "Penulis tidak diketahui"}
+                                        {book.author || "Penulis tidak diketahui"}
                                     </p>
                                     {book.category && (
                                         <span className="inline-block bg-neutral-100 text-neutral-700 text-xs px-2 py-0.5 rounded-md">
@@ -110,8 +107,7 @@ export default function Index({ books, categories, filters }) {
                                         {book.available_copies > 0 ? (
                                             <span className="flex items-center gap-1.5">
                                                 <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                                                {book.available_copies}{" "}
-                                                eksemplar tersedia
+                                                {book.available_copies} eksemplar tersedia
                                             </span>
                                         ) : (
                                             <span className="flex items-center gap-1.5">
@@ -124,42 +120,42 @@ export default function Index({ books, categories, filters }) {
 
                                 {/* Actions */}
                                 <div className="space-y-2">
-                                    <Link
-                                        href={
-                                            book.available_copies > 0
-                                                ? route("member.borrow.store")
-                                                : route(
-                                                      "member.books.reserve",
-                                                      book.id
-                                                  )
+                                    <button
+                                    onClick={() => {
+                                        // Tentukan route mana yang akan dipanggil berdasarkan stok
+                                        if (book.available_copies > 0) {
+                                            // Jika stok ada, panggil route peminjaman
+                                            router.post(route("member.borrow.store"), {
+                                                book_id: book.id,
+                                            });
+                                        } else {
+                                            // Jika stok habis (Reservasi), panggil route reservasi
+                                            router.post(
+                                                route("member.books.reserve", book.id), // Mengirim ID sebagai parameter route
+                                                {}, // Tidak perlu kirim data tambahan
+                                                { preserveScroll: true }
+                                            );
                                         }
-                                        data={{ book_id: book.id }}
-                                        method="post"
-                                        as="button"
-                                        disabled={
-                                            book.is_reserved ||
-                                            book.is_borrowing
-                                        }
-                                        className={`w-full px-4 py-2.5 rounded-lg text-sm font-medium transition active:scale-[0.98] ${
-                                            book.available_copies > 0
-                                                ? "bg-emerald-500 hover:bg-emerald-600 text-white"
-                                                : "bg-amber-500 hover:bg-amber-600 text-white"
-                                        } ${
-                                            book.is_reserved ||
-                                            book.is_borrowing
-                                                ? "opacity-50 cursor-not-allowed"
-                                                : ""
-                                        }`}
-                                    >
-                                        {book.is_borrowing
-                                            ? "Sedang Dipinjam"
-                                            : book.is_reserved
-                                            ? "Sudah Dipesan"
-                                            : book.available_copies > 0
-                                            ? "Pinjam Buku"
-                                            : "Reservasi"}
-                                    </Link>
-
+                                    }}
+                                    disabled={book.is_reserved || book.is_borrowing}
+                                    className={`w-full px-4 py-2.5 rounded-lg text-sm font-medium transition active:scale-[0.98] ${
+                                        book.available_copies > 0
+                                            ? "bg-emerald-500 hover:bg-emerald-600 text-white"
+                                            : "bg-amber-500 hover:bg-amber-600 text-white" // Ini jadi tombol Reservasi
+                                    } ${
+                                        book.is_reserved || book.is_borrowing
+                                            ? "opacity-50 cursor-not-allowed"
+                                            : ""
+                                    }`}
+                                >
+                                    {book.is_borrowing
+                                        ? "Sedang Dipinjam"
+                                        : book.is_reserved
+                                        ? "Sudah Dipesan"
+                                        : book.available_copies > 0
+                                        ? "Pinjam Buku"
+                                        : "Reservasi"}
+                                </button>
                                     {book.file_path && (
                                         <div className="flex gap-2">
                                             <a
@@ -203,6 +199,8 @@ export default function Index({ books, categories, filters }) {
                         <Link
                             key={i}
                             href={link.url || "#"}
+                            preserveScroll
+                            preserveState
                             className={`px-3 py-1.5 rounded text-sm font-medium transition ${
                                 link.active
                                     ? "bg-blue-600 text-white"

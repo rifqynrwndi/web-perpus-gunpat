@@ -85,23 +85,22 @@ export default function Index({ books }) {
                                     </td>
                                     <td className="px-5 py-3 space-x-3">
                                         <Link
-                                            href={route(
-                                                "admin.books.edit",
-                                                book.id
-                                            )}
+                                            href={route("admin.books.edit", book.id)}
                                             className="text-blue-600 hover:text-blue-800 font-medium text-sm"
                                         >
                                             Edit
                                         </Link>
+
                                         <Link
                                             as="button"
                                             method="delete"
-                                            href={route(
-                                                "admin.books.destroy",
-                                                book.id
-                                            )}
+                                            href={route("admin.books.destroy", book.id)}
                                             onClick={(e) => {
-                                                if(!confirm(`Apakah kamu yakin ingin menghapus buku "${book.title}"?`)) {
+                                                if (
+                                                    !confirm(
+                                                        `Apakah kamu yakin ingin menghapus buku "${book.title}"?`
+                                                    )
+                                                ) {
                                                     e.preventDefault();
                                                 }
                                             }}
@@ -125,6 +124,24 @@ export default function Index({ books }) {
                     </tbody>
                 </table>
             </div>
+
+            {/* Pagination */}
+            {books.links.length > 3 && (
+                <div className="flex justify-center mt-6 space-x-2">
+                    {books.links.map((link, index) => (
+                        <Link
+                            key={index}
+                            href={link.url || "#"}
+                            dangerouslySetInnerHTML={{ __html: link.label }}
+                            className={`px-3 py-1 rounded-md border text-sm ${
+                                link.active
+                                    ? "bg-blue-600 text-white border-blue-600"
+                                    : "bg-white text-gray-600 border-gray-300 hover:bg-gray-100"
+                            } ${!link.url ? "opacity-50 cursor-not-allowed" : ""}`}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

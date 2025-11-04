@@ -85,18 +85,43 @@ export default function Index({ borrowings }) {
                                     </td>
                                     <td className="px-5 py-3 space-x-2">
                                         {b.status === "requested" && (
-                                            <Link
-                                                method="patch"
-                                                as="button"
-                                                href={route(
-                                                    "admin.borrowings.update",
-                                                    b.id
-                                                )}
-                                                data={{ action: "approve" }}
-                                                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-all shadow-sm hover:shadow-md"
-                                            >
-                                                Approve
-                                            </Link>
+                                            <>
+                                                <Link
+                                                    method="patch"
+                                                    as="button"
+                                                    href={route(
+                                                        "admin.borrowings.update",
+                                                        b.id
+                                                    )}
+                                                    data={{ action: "approve" }}
+                                                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-all shadow-sm hover:shadow-md"
+                                                >
+                                                    Approve
+                                                </Link>
+
+                                                <Link
+                                                    method="patch"
+                                                    as="button"
+                                                    href={route(
+                                                        "admin.borrowings.update",
+                                                        b.id
+                                                    )}
+                                                    data={{ action: "reject" }}
+                                                    className="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-md text-xs font-medium transition-all shadow-sm hover:shadow-md"
+
+                                                    onClick={(e) => {
+                                                        if (
+                                                            !confirm(
+                                                                "Anda yakin ingin menolak permintaan peminjaman ini?"
+                                                            )
+                                                        ) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    Reject
+                                                </Link>
+                                            </>
                                         )}
                                         {b.status === "borrowed" && (
                                             <Link

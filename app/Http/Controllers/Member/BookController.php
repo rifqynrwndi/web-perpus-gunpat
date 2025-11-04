@@ -18,38 +18,45 @@ class BookController extends Controller
 
         $query = Book::with('category');
 
+        // Filter pencarian
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('title', 'like', '%' . $request->search . '%')
+                ->orWhere('author', 'like', '%' . $request->search . '%');
+            });
         }
 
+        // Filter kategori
         if ($request->filled('category')) {
             $query->where('category_id', $request->category);
         }
 
+        // Pagination + pertahankan query string (search, category)
         $books = $query
             ->orderBy('title')
             ->paginate(12)
-            ->withQueryString()
+            ->appends($request->only(['search', 'category'])) // penting agar pagination link tetap membawa query
             ->through(function ($book) use ($user) {
-                // Cek apakah user sudah melakukan reservasi buku ini
+                // Cek status peminjaman & reservasi untuk user yang sedang login
                 $isReserved = \App\Models\Reservation::where('user_id', $user->id)
                     ->where('book_id', $book->id)
                     ->whereIn('status', ['waiting', 'notified'])
                     ->exists();
-                
-                 $isBorrowing = \App\Models\Borrowing::where('user_id', $user->id)
+
+                $isBorrowing = \App\Models\Borrowing::where('user_id', $user->id)
                     ->where('book_id', $book->id)
                     ->whereIn('status', ['requested', 'borrowed'])
                     ->exists();
 
-                // Tambahkan field virtual ke tiap item
+                // Tambahkan atribut virtual
                 $book->is_reserved = $isReserved;
                 $book->is_borrowing = $isBorrowing;
 
                 return $book;
             });
 
-        $categories = Category::all(['id', 'name']);
+        // Ambil semua kategori
+        $categories = Category::select('id', 'name')->get();
 
         return Inertia::render('Member/Books/Index', [
             'books' => $books,
@@ -57,6 +64,7 @@ class BookController extends Controller
             'filters' => $request->only(['search', 'category']),
         ]);
     }
+
 
     public function reserve(Book $book)
     {
