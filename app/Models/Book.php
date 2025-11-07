@@ -22,6 +22,7 @@ class Book extends Model
         'total_copies',
         'available_copies',
         'file_path',
+        'cover_path',
         'description',
     ];
 

@@ -6,12 +6,15 @@ export default function Edit({ categories, book }) {
     const { data, setData, post, processing, errors } = useForm({
         title: book.title,
         author: book.author,
+        publisher: book.publisher || "",
         isbn: book.isbn,
         category_id: book.category_id,
         total_copies: book.total_copies,
         available_copies: book.available_copies,
         description: book.description,
         _method: "PUT",
+        cover: null,
+        file: null,
     });
 
     const [previewFile, setPreviewFile] = useState(
@@ -82,40 +85,63 @@ export default function Edit({ categories, book }) {
                     </div>
 
                     {/* Penulis & Kategori */}
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                Penulis
-                            </label>
-                            <input
-                                type="text"
-                                value={data.author}
-                                onChange={(e) =>
-                                    setData("author", e.target.value)
-                                }
-                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                Kategori
-                            </label>
-                            <select
-                                value={data.category_id}
-                                onChange={(e) =>
-                                    setData("category_id", e.target.value)
-                                }
-                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                            >
-                                <option value="">Pilih kategori...</option>
-                                {categories.map((cat) => (
-                                    <option key={cat.id} value={cat.id}>
-                                        {cat.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                    <div className="grid grid-cols-3 gap-4">
+                    {/* Penulis */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        Penulis
+                        </label>
+                        <input
+                        type="text"
+                        value={data.author}
+                        onChange={(e) => setData("author", e.target.value)}
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        />
+                        {errors.author && (
+                        <p className="text-rose-600 text-sm mt-1">{errors.author}</p>
+                        )}
                     </div>
+
+                    {/* ISBN */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        ISBN
+                        </label>
+                        <input
+                        type="text"
+                        value={data.isbn || ""}
+                        onChange={(e) => setData("isbn", e.target.value)}
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        placeholder="Masukkan ISBN (opsional)"
+                        />
+                        {errors.isbn && (
+                        <p className="text-rose-600 text-sm mt-1">{errors.isbn}</p>
+                        )}
+                    </div>
+
+                    {/* Kategori */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        Kategori
+                        </label>
+                        <select
+                        value={data.category_id}
+                        onChange={(e) => setData("category_id", e.target.value)}
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        >
+                        <option value="">Pilih kategori...</option>
+                        {categories.map((cat) => (
+                            <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                            </option>
+                        ))}
+                        </select>
+                        {errors.category_id && (
+                        <p className="text-rose-600 text-sm mt-1">{errors.category_id}</p>
+                        )}
+                    </div>
+                    </div>
+
 
                     {/* Total & Tersedia */}
                     <div className="grid grid-cols-2 gap-4">
@@ -195,6 +221,29 @@ export default function Edit({ categories, book }) {
                                         </a>
                                     </p>
                                 )}
+                            </div>
+                        )}
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                            Cover Buku (JPG / PNG)
+                        </label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setData("cover", e.target.files[0])}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-gray-100 hover:file:bg-gray-200 transition-all"
+                        />
+
+                        {book.cover_path && (
+                            <div className="mt-3">
+                                <p className="text-sm text-gray-600 mb-1">Cover saat ini:</p>
+                                <img
+                                    src={`/storage/${book.cover_path}`}
+                                    alt="Cover Buku"
+                                    className="w-40 h-56 object-cover rounded-lg shadow"
+                                />
                             </div>
                         )}
                     </div>

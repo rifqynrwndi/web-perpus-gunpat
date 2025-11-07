@@ -78,11 +78,23 @@ export default function Index({ borrowings }) {
                                         </span>
                                     </td>
                                     <td className="px-5 py-3 text-gray-600">
-                                        {b.borrow_date ?? "-"}
-                                    </td>
-                                    <td className="px-5 py-3 text-gray-600">
-                                        {b.due_date ?? "-"}
-                                    </td>
+                                    {b.borrow_date
+                                        ? new Date(b.borrow_date).toLocaleDateString("id-ID", {
+                                            day: "2-digit",
+                                            month: "long",
+                                            year: "numeric",
+                                        })
+                                        : "-"}
+                                </td>
+                                <td className="px-5 py-3 text-gray-600">
+                                    {b.due_date
+                                        ? new Date(b.due_date).toLocaleDateString("id-ID", {
+                                            day: "2-digit",
+                                            month: "long",
+                                            year: "numeric",
+                                        })
+                                        : "-"}
+                                </td>
                                     <td className="px-5 py-3 space-x-2">
                                         {b.status === "requested" && (
                                             <>

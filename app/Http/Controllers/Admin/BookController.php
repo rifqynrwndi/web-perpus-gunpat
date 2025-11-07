@@ -11,12 +11,25 @@ use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::with('category')->orderBy('id', 'asc')->paginate(10);
+        $query = Book::query()->with('category');
 
-        return Inertia::render('Admin/Books/Index', [
+        if ($request->search) {
+            $query->where('title', 'like', "%{$request->search}%")
+                ->orWhere('author', 'like', "%{$request->search}%");
+        }
+
+        if ($request->category) {
+            $query->where('category_id', $request->category);
+        }
+
+        $books = $query->latest()->paginate(10)->withQueryString();
+
+        return inertia('Admin/Books/Index', [
             'books' => $books,
+            'categories' => Category::all(),
+            'filters' => $request->only(['search', 'category']),
         ]);
     }
 
@@ -40,6 +53,7 @@ class BookController extends Controller
             'available_copies' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
             'file' => 'nullable|mimes:pdf|max:20480',
+            'cover' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         // Jika available_copies tidak diisi, samakan dengan total_copies
@@ -59,6 +73,13 @@ class BookController extends Controller
         if ($request->hasFile('file')) {
             $path = $request->file('file')->store('books', 'public');
         }
+
+        // Upload cover jika ada
+        $coverPath = null;
+        if ($request->hasFile('cover')) {
+            $coverPath = $request->file('cover')->store('covers', 'public');
+        }
+        $validated['cover_path'] = $coverPath;
 
         // Tambahkan file_path ke data
         $validated['file_path'] = $path;
@@ -88,6 +109,8 @@ class BookController extends Controller
             'available_copies' => 'nullable|integer|min:0',
             'description' => 'nullable|string',
             'file' => 'nullable|mimes:pdf|max:20480',
+            'cover' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+
         ]);
 
         // Jika available_copies tidak diisi, samakan dengan total_copies
@@ -112,6 +135,16 @@ class BookController extends Controller
             // Simpan file baru
             $validated['file_path'] = $request->file('file')->store('books', 'public');
         }
+
+        if ($request->hasFile('cover')) {
+            // hapus cover lama jika ada
+            if ($book->cover_path && Storage::disk('public')->exists($book->cover_path)) {
+                Storage::disk('public')->delete($book->cover_path);
+            }
+
+            $validated['cover_path'] = $request->file('cover')->store('covers', 'public');
+        }
+
 
         $book->update($validated);
 

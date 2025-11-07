@@ -56,17 +56,20 @@ Ikuti langkah-langkah berikut untuk menjalankan proyek ini secara lokal:
     - Buat database baru di MySQL.
     - Update konfigurasi database di file `.env`.
 
-6. **Run migrations dan seeder**
+6. **Import Database SQL**
+    - Import `books.sql` ke Tabel `books`
+
+7. **Run migrations dan seeder**
     ```bash
     php artisan migrate --seed
     ```
 
-7. **Build assets**
+8. **Build assets**
     ```bash
     npm run build
     ```
 
-8. **Jalankan server**
+9. **Jalankan server**
     ```bash
     php artisan serve
     npm run dev

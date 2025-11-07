@@ -10,6 +10,8 @@ export default function Create({ categories }) {
         total_copies: 1,
         available_copies: "",
         description: "",
+        file: null,
+        cover: null, // tambahkan ini
     });
 
     const submit = (e) => {
@@ -145,6 +147,18 @@ export default function Create({ categories }) {
                             type="file"
                             accept="application/pdf"
                             onChange={(e) => setData("file", e.target.files[0])}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-gray-100 hover:file:bg-gray-200 transition-all"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                            Cover Buku (JPG / PNG)
+                        </label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => setData("cover", e.target.files[0])}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-gray-100 hover:file:bg-gray-200 transition-all"
                         />
                     </div>

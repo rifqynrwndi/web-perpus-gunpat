@@ -4,24 +4,18 @@ import { useEffect, useState } from "react";
 
 export default function Index({ books, categories, filters }) {
     const { flash } = usePage().props;
-
-    // State pencarian & kategori
     const [search, setSearch] = useState(filters.search || "");
     const [category, setCategory] = useState(filters.category || "");
+    const [selectedBook, setSelectedBook] = useState(null);
 
-    // Trigger perubahan filter
     const handleFilterChange = (newSearch, newCategory) => {
         router.get(
             route("member.books.index"),
             { search: newSearch, category: newCategory, page: 1 },
-            {
-                preserveState: true,
-                replace: true,
-            }
+            { preserveState: true, replace: true }
         );
     };
 
-    // Debounce pencarian
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
             handleFilterChange(search, category);
@@ -90,7 +84,24 @@ export default function Index({ books, categories, filters }) {
                             }}
                         >
                             <div className="flex flex-col h-full justify-between space-y-3">
-                                {/* Info */}
+                                {/* Gambar Buku */}
+                                <div
+                                className="cursor-pointer relative group flex items-center justify-center bg-neutral-50 rounded-lg overflow-hidden h-72"
+                                onClick={() => setSelectedBook(book)}
+                                >
+                                <img
+                                    src={
+                                    book.cover_path
+                                        ? `/storage/${book.cover_path}`
+                                        : "https://via.placeholder.com/300x400?text=No+Cover"
+                                    }
+                                    alt={book.title}
+                                    className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
+                                />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition rounded-lg"></div>
+                                </div>
+
+                                {/* Info Buku */}
                                 <div className="space-y-2">
                                     <h2 className="text-base font-semibold text-neutral-900 line-clamp-2">
                                         {book.title}
@@ -118,44 +129,42 @@ export default function Index({ books, categories, filters }) {
                                     </p>
                                 </div>
 
-                                {/* Actions */}
+                                {/* Tombol Aksi */}
                                 <div className="space-y-2">
                                     <button
-                                    onClick={() => {
-                                        // Tentukan route mana yang akan dipanggil berdasarkan stok
-                                        if (book.available_copies > 0) {
-                                            // Jika stok ada, panggil route peminjaman
-                                            router.post(route("member.borrow.store"), {
-                                                book_id: book.id,
-                                            });
-                                        } else {
-                                            // Jika stok habis (Reservasi), panggil route reservasi
-                                            router.post(
-                                                route("member.books.reserve", book.id), // Mengirim ID sebagai parameter route
-                                                {}, // Tidak perlu kirim data tambahan
-                                                { preserveScroll: true }
-                                            );
-                                        }
-                                    }}
-                                    disabled={book.is_reserved || book.is_borrowing}
-                                    className={`w-full px-4 py-2.5 rounded-lg text-sm font-medium transition active:scale-[0.98] ${
-                                        book.available_copies > 0
-                                            ? "bg-emerald-500 hover:bg-emerald-600 text-white"
-                                            : "bg-amber-500 hover:bg-amber-600 text-white" // Ini jadi tombol Reservasi
-                                    } ${
-                                        book.is_reserved || book.is_borrowing
-                                            ? "opacity-50 cursor-not-allowed"
-                                            : ""
-                                    }`}
-                                >
-                                    {book.is_borrowing
-                                        ? "Sedang Dipinjam"
-                                        : book.is_reserved
-                                        ? "Sudah Dipesan"
-                                        : book.available_copies > 0
-                                        ? "Pinjam Buku"
-                                        : "Reservasi"}
-                                </button>
+                                        onClick={() => {
+                                            if (book.available_copies > 0) {
+                                                router.post(route("member.borrow.store"), {
+                                                    book_id: book.id,
+                                                });
+                                            } else {
+                                                router.post(
+                                                    route("member.books.reserve", book.id),
+                                                    {},
+                                                    { preserveScroll: true }
+                                                );
+                                            }
+                                        }}
+                                        disabled={book.is_reserved || book.is_borrowing}
+                                        className={`w-full px-4 py-2.5 rounded-lg text-sm font-medium transition active:scale-[0.98] ${
+                                            book.available_copies > 0
+                                                ? "bg-emerald-500 hover:bg-emerald-600 text-white"
+                                                : "bg-amber-500 hover:bg-amber-600 text-white"
+                                        } ${
+                                            book.is_reserved || book.is_borrowing
+                                                ? "opacity-50 cursor-not-allowed"
+                                                : ""
+                                        }`}
+                                    >
+                                        {book.is_borrowing
+                                            ? "Sedang Dipinjam"
+                                            : book.is_reserved
+                                            ? "Sudah Dipesan"
+                                            : book.available_copies > 0
+                                            ? "Pinjam Buku"
+                                            : "Reservasi"}
+                                    </button>
+
                                     {book.file_path && (
                                         <div className="flex gap-2">
                                             <a
@@ -214,10 +223,63 @@ export default function Index({ books, categories, filters }) {
                 </div>
             )}
 
+            {/* Modal Detail Buku */}
+            {selectedBook && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-xl shadow-lg w-[90%] max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+                    {/* Header */}
+                    <div className="p-4 border-b flex justify-between items-center">
+                    <h2 className="text-lg font-semibold text-gray-800">{selectedBook.title}</h2>
+                    <button
+                        onClick={() => setSelectedBook(null)}
+                        className="text-gray-500 hover:text-gray-700 text-xl"
+                    >
+                        ✕
+                    </button>
+                    </div>
+
+                    {/* Body */}
+                    <div className="overflow-y-auto p-6 space-y-4">
+                    {/* Cover Buku */}
+                    <div className="flex justify-center">
+                        <img
+                        src={
+                            selectedBook.cover_path
+                            ? `/storage/${selectedBook.cover_path}`
+                            : "https://via.placeholder.com/400x600?text=No+Cover"
+                        }
+                        alt={selectedBook.title}
+                        className="object-contain max-h-[350px] w-auto rounded-lg mb-4 bg-neutral-50"
+                        />
+                    </div>
+
+                    {/* Detail Buku */}
+                    <div className="text-sm text-gray-700 space-y-2">
+                        <p className="text-sm text-neutral-600 mt-1">
+                        <strong>Penulis: </strong>{selectedBook.author || "Penulis tidak diketahui"}
+                        </p>
+                        <p className="text-sm text-neutral-600 mt-3">
+                        <strong>Kode Buku: </strong> {selectedBook.id}
+                        </p>
+                        <p className="text-sm text-neutral-600">
+                        <strong>ISBN: </strong> {selectedBook.isbn || "Tidak tersedia"}
+                        </p>
+                        <p className="text-sm text-neutral-700 mt-3 leading-relaxed">
+                        {selectedBook.description || "Tidak ada deskripsi buku."}
+                        </p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            )}
+
             <style>{`
                 @keyframes fadeIn {
                     from { opacity: 0; transform: translateY(6px); }
                     to { opacity: 1; transform: translateY(0); }
+                }
+                .animate-fadeIn {
+                    animation: fadeIn 0.3s ease-out;
                 }
             `}</style>
         </div>

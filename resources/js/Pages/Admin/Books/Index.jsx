@@ -1,13 +1,29 @@
-import { Link, usePage } from "@inertiajs/react";
+import { Link, usePage, router } from "@inertiajs/react";
 import AdminLayout from "../AdminLayout";
+import { useEffect, useState } from "react";
 
-export default function Index({ books }) {
+export default function Index({ books, categories, filters }) {
     const { flash } = usePage().props;
+    const [search, setSearch] = useState(filters.search || "");
+    const [category, setCategory] = useState(filters.category || "");
+
+    // 🔁 Realtime filtering dengan debounce
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            router.get(
+                route("admin.books.index"),
+                { search, category },
+                { preserveState: true, replace: true }
+            );
+        }, 400); // 0.4 detik delay biar smooth
+
+        return () => clearTimeout(timeout);
+    }, [search, category]);
 
     return (
         <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
             {/* Header */}
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">
                         Daftar Buku
@@ -31,6 +47,47 @@ export default function Index({ books }) {
                     {flash.success}
                 </div>
             )}
+
+            {/* Filter Bar */}
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                    {/* Search */}
+                    <input
+                        type="text"
+                        placeholder="Cari judul atau penulis..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="w-full sm:w-64 px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                    />
+
+                    {/* Kategori */}
+                    <div className="relative">
+                    <select
+                        value={category}
+                        onChange={(e) => setCategory(e.target.value)}
+                        className="appearance-none pr-8 pl-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 text-gray-700"
+                    >
+                        <option value="">Semua Kategori</option>
+                        {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                        </option>
+                        ))}
+                    </select>
+
+                    {/* Ikon panah */}
+                    <svg
+                        className="w-4 h-4 text-gray-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                    </div>
+                </div>
+            </div>
 
             {/* Table */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
