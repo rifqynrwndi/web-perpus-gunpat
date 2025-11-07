@@ -61,13 +61,13 @@ export default function Index({ books, categories, filters }) {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Cari judul atau penulis..."
-                    className="flex-1 px-4 py-2.5 border border-neutral-300 rounded-lg text-sm text-neutral-800 placeholder-neutral-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="flex-1 px-4 py-2.5 border border-neutral-300 rounded-lg text-sm text-neutral-800 placeholder-neutral-400 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
                 />
                 <select
                     name="category"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="sm:w-56 px-4 py-2.5 border border-neutral-300 rounded-lg text-sm text-neutral-800 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="sm:w-56 px-4 py-2.5 border border-neutral-300 rounded-lg text-sm text-neutral-800 focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
                 >
                     <option value="">Semua Kategori</option>
                     {categories.map((cat) => (
@@ -162,7 +162,7 @@ export default function Index({ books, categories, filters }) {
                                                 href={`/storage/${book.file_path}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition active:scale-[0.98] text-center"
+                                                className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition active:scale-[0.98] text-center"
                                             >
                                                 Baca E-book
                                             </a>
@@ -203,7 +203,7 @@ export default function Index({ books, categories, filters }) {
                             preserveState
                             className={`px-3 py-1.5 rounded text-sm font-medium transition ${
                                 link.active
-                                    ? "bg-blue-600 text-white"
+                                    ? "bg-red-600 text-white"
                                     : link.url
                                     ? "bg-white border border-neutral-300 text-neutral-700 hover:bg-neutral-50"
                                     : "bg-neutral-100 text-neutral-400 cursor-not-allowed"

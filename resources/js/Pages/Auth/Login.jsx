@@ -20,7 +20,7 @@ export default function Login({ status, canResetPassword }) {
             <div className="w-full max-w-md mb-4">
                 <Link
                     href="/"
-                    className="text-sm font-medium text-blue-600 hover:text-blue-700"
+                    className="text-sm font-medium text-red-600 hover:text-red-700"
                 >
                     &larr; Kembali ke Beranda
                 </Link>
@@ -57,7 +57,7 @@ export default function Login({ status, canResetPassword }) {
                             name="email"
                             value={data.email}
                             onChange={(e) => setData("email", e.target.value)}
-                            className="w-full rounded-lg border border-neutral-300 px-3.5 py-2.5 text-neutral-900 placeholder-neutral-400 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                            className="w-full rounded-lg border border-neutral-300 px-3.5 py-2.5 text-neutral-900 placeholder-neutral-400 shadow-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all"
                             placeholder="contoh@email.com"
                             autoFocus
                             autoComplete="username"
@@ -84,7 +84,7 @@ export default function Login({ status, canResetPassword }) {
                             onChange={(e) =>
                                 setData("password", e.target.value)
                             }
-                            className="w-full rounded-lg border border-neutral-300 px-3.5 py-2.5 text-neutral-900 placeholder-neutral-400 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                            className="w-full rounded-lg border border-neutral-300 px-3.5 py-2.5 text-neutral-900 placeholder-neutral-400 shadow-sm focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition-all"
                             placeholder="••••••••"
                             autoComplete="current-password"
                         />
@@ -104,7 +104,7 @@ export default function Login({ status, canResetPassword }) {
                                 onChange={(e) =>
                                     setData("remember", e.target.checked)
                                 }
-                                className="w-4 h-4 rounded border-neutral-300 text-blue-600 focus:ring-blue-500"
+                                className="w-4 h-4 rounded border-neutral-300 text-red-600 focus:ring-red-500"
                             />
                             Ingat saya
                         </label>
@@ -112,7 +112,7 @@ export default function Login({ status, canResetPassword }) {
                         {canResetPassword && (
                             <Link
                                 href={route("password.request")}
-                                className="text-blue-600 hover:text-blue-700 font-medium"
+                                className="text-red-600 hover:text-red-700 font-medium"
                             >
                                 Lupa password?
                             </Link>
@@ -122,7 +122,7 @@ export default function Login({ status, canResetPassword }) {
                     <button
                         type="submit"
                         disabled={processing}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg shadow-sm transition-all active:scale-[0.98]"
+                        className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 rounded-lg shadow-sm transition-all active:scale-[0.98]"
                     >
                         Masuk
                     </button>
@@ -132,7 +132,7 @@ export default function Login({ status, canResetPassword }) {
                     Belum punya akun?{" "}
                     <Link
                         href={route("register")}
-                        className="text-blue-600 hover:text-blue-700 font-medium"
+                        className="text-red-600 hover:text-red-700 font-medium"
                     >
                         Daftar sekarang
                     </Link>

@@ -35,12 +35,6 @@ export default function MemberLayout({ children }) {
                                 Riwayat
                             </NavLink>
                             <NavLink
-                                href={route("member.reservations.index")}
-                                active={current("member.reservations.index")}
-                            >
-                                Reservasi
-                            </NavLink>
-                            <NavLink
                                 href={route("member.profile.edit")}
                                 active={current("member.profile.edit")}
                             >

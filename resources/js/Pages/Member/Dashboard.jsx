@@ -45,7 +45,7 @@ export default function Dashboard({ auth }) {
                         href={link.href}
                         className="group block bg-white border border-neutral-200 rounded-xl p-5 shadow-sm hover:shadow-md transition-all hover:border-neutral-300"
                     >
-                        <h2 className="text-base font-semibold text-neutral-900 group-hover:text-blue-600 transition-colors">
+                        <h2 className="text-base font-semibold text-neutral-900 group-hover:text-red-600 transition-colors">
                             {link.title}
                         </h2>
                         <p className="text-neutral-500 text-sm mt-1 leading-relaxed">

@@ -8,7 +8,7 @@ export default function NavLink({ href, active, children, ...props }) {
             className={
                 "block px-3 py-2 rounded-md text-sm font-medium transition " +
                 (active
-                    ? "bg-blue-600 text-white"
+                    ? "bg-red-600 text-white"
                     : "text-gray-700 hover:bg-gray-100")
             }
         >
