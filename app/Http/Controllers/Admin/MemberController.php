@@ -12,7 +12,7 @@ class MemberController extends Controller
 {
     public function index()
     {
-        $members = User::where('role', 'member')
+        $members = User::whereIn('role', ['member', 'admin'])
             ->latest()
             ->paginate(10);
 
@@ -32,13 +32,14 @@ class MemberController extends Controller
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
+            'role' => 'nullable|string|in:member,admin', // tambahkan validasi role opsional
         ]);
 
         User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => 'member',
+            'role' => $validated['role'] ?? 'member', // default member
         ]);
 
         return redirect()->route('admin.members.index')->with('success', 'Member baru berhasil ditambahkan.');
@@ -46,10 +47,9 @@ class MemberController extends Controller
 
     public function edit(User $member)
     {
-        if ($member->role !== 'member') {
-            abort(403);
-        }
-
+        // if ($member->role === 'admin') {
+        //     abort(403, 'Tidak dapat mengedit admin.');
+        // }
         return Inertia::render('Admin/Members/Edit', [
             'member' => $member,
         ]);
@@ -57,31 +57,40 @@ class MemberController extends Controller
 
     public function update(Request $request, User $member)
     {
-        if ($member->role !== 'member') {
-            abort(403);
+        // Pastikan hanya admin yang bisa ubah data member
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Hanya admin yang dapat mengubah data member.');
         }
 
         $validated = $request->validate([
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email,' . $member->id,
             'password' => 'nullable|min:6',
+            'role' => 'required',
         ]);
 
-        $member->update([
+        // Update data user
+        $member->fill([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => $validated['password']
-                ? Hash::make($validated['password'])
-                : $member->password,
+            'role' => $validated['role'],
         ]);
 
-        return redirect()->route('admin.members.index')->with('success', 'Data member berhasil diperbarui.');
+        if (!empty($validated['password'])) {
+            $member->password = Hash::make($validated['password']);
+        }
+
+        $member->save();
+
+        return redirect()
+            ->route('admin.members.index')
+            ->with('success', 'Data member berhasil diperbarui.');
     }
 
     public function destroy(User $member)
     {
-        if ($member->role !== 'member') {
-            return back()->with('error', 'Hanya member yang bisa dihapus.');
+        if ($member->role === 'admin') {
+            return back()->with('error', 'Admin tidak dapat dihapus.');
         }
 
         $member->delete();

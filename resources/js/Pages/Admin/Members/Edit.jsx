@@ -6,6 +6,7 @@ export default function Edit({ member }) {
         name: member.name || "",
         email: member.email || "",
         password: "",
+        role: member.role || "member",
     });
 
     const submit = (e) => {
@@ -66,6 +67,25 @@ export default function Edit({ member }) {
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                            Role
+                        </label>
+                        <select
+                            value={data.role}
+                            onChange={(e) => setData("role", e.target.value)}
+                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-900"
+                        >
+                            <option value="member">Member</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        {errors.role && (
+                            <p className="text-rose-600 text-sm mt-1">
+                                {errors.role}
+                            </p>
+                        )}
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
                             Password (kosongkan jika tidak ingin mengubah)
                         </label>
                         <input
@@ -105,4 +125,3 @@ export default function Edit({ member }) {
 }
 
 Edit.layout = (page) => <AdminLayout>{page}</AdminLayout>;
-    

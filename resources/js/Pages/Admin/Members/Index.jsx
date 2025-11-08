@@ -44,6 +44,9 @@ export default function Index({ members }) {
                                 Email
                             </th>
                             <th className="px-5 py-3 text-left font-semibold text-gray-600">
+                                Role
+                            </th>
+                            <th className="px-5 py-3 text-left font-semibold text-gray-600">
                                 Tanggal Bergabung
                             </th>
                             <th className="px-5 py-3 text-left font-semibold text-gray-600">
@@ -64,11 +67,17 @@ export default function Index({ members }) {
                                     <td className="px-5 py-3">
                                         {member.email}
                                     </td>
+                                    <td className="px-5 py-3 capitalize">
+                                        {member.role === "member"
+                                            ? "Member"
+                                            : "Admin"}
+                                    </td>
                                     <td className="px-5 py-3 text-gray-600">
                                         {new Date(
                                             member.created_at
                                         ).toLocaleDateString("id-ID")}
                                     </td>
+
                                     <td className="px-5 py-3 space-x-3">
                                         <Link
                                             href={route(
