@@ -33,7 +33,7 @@ class BookController extends Controller
 
         // Pagination + pertahankan query string (search, category)
         $books = $query
-            ->orderBy('title')
+            ->orderBy('id')
             ->paginate(12)
             ->appends($request->only(['search', 'category'])) // penting agar pagination link tetap membawa query
             ->through(function ($book) use ($user) {

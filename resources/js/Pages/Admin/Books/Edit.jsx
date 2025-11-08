@@ -4,6 +4,7 @@ import { useState } from "react";
 
 export default function Edit({ categories, book }) {
     const { data, setData, post, processing, errors } = useForm({
+        id: book.id,
         title: book.title,
         author: book.author,
         publisher: book.publisher || "",
@@ -66,6 +67,23 @@ export default function Edit({ categories, book }) {
                     className="space-y-5"
                     encType="multipart/form-data"
                 >
+                    {/* ID Buku */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                            ID Buku
+                        </label>
+                        <input
+                            type="text"
+                            value={data.id}
+                            onChange={(e) => setData("id", e.target.value)}
+                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900 transition-all"
+                        />
+                        {errors.id && (
+                            <p className="text-rose-600 text-sm mt-1">
+                                {errors.id}
+                            </p>
+                        )}
+                    </div>
                     {/* Judul */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1.5">

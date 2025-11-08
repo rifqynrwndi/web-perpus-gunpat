@@ -93,7 +93,7 @@ export default function Index({ books, categories, filters }) {
                                     src={
                                     book.cover_path
                                         ? `/storage/${book.cover_path}`
-                                        : "https://via.placeholder.com/300x400?text=No+Cover"
+                                        : "https://placehold.co/600x400?text=Sampul+Buku+Tidak+Tersedia"
                                     }
                                     alt={book.title}
                                     className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
