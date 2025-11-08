@@ -163,7 +163,7 @@ export default function Welcome({ canLogin, canRegister }) {
                         <div className="space-y-4">
                             <p><strong>📍 Alamat:</strong> Jl. Magersari, Gunungpati, Kec. Gn. Pati, Kota Semarang, Jawa Tengah 50229</p>
                             <p><strong>☎️ Telepon:</strong> (024) 76922082</p>
-                            <p><strong>📧 Email:</strong> kelurahan.gunungpati@semarangkota.go.id</p>
+                            <p><strong>📧 Email:</strong> kelgunungpati@gmail.com</p>
                             <p><strong>🕓 Jam Layanan:</strong> Senin - Jumat, 08.00 - 15.00 WIB</p>
                         </div>
 
