@@ -69,7 +69,12 @@ Ikuti langkah-langkah berikut untuk menjalankan proyek ini secara lokal:
     npm run build
     ```
 
-9. **Jalankan server**
+9. **Run Storage link**
+    ```bash
+    php artisan storage:link
+    ```
+
+10. **Jalankan server**
     ```bash
     php artisan serve
     npm run dev
